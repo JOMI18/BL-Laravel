@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +25,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// due to the sanctum auth, we need to send a token to the backend which is being done in the flutter app through inteerceptors
+
 // // remember never use get for sensitive information, just post ... so you don't get hacked
 // Route::get("hello",function () {
 //     return response()->json(["message"=>"Successfully Connected to the database"]);
@@ -35,27 +38,30 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 // Authentication routes
-Route::prefix('/auth')->group(function(){
-    Route::post('register',[UserController::class,'register']);
-    // 812750 password
+Route::prefix('/auth')->group(function () {
+    Route::post('register', [AuthController::class, 'register']);
+    Route::post('login', [AuthController::class, 'login']);
+    // 195027 password
     //3218 pin
-    Route::post('checkotp',[UserController::class,'checkOtp']); 
-    Route::post('sendotp',[UserController::class,'sendOtpNow']); 
-    
+    Route::post('checkotp', [AuthController::class, 'checkOtp']);
+    Route::post('sendotp', [AuthController::class, 'sendOtpNow']);
+    // Route::post('verifybvn', [UserController::class, 'verifyBVN']);
 });
 
 // protected routes
-Route::middleware('auth:sanctum')->prefix('/account')->group(function(){
-    
-    Route::post('createtxpin',[UserController::class,'createTxPin']); 
+Route::middleware('auth:sanctum')->prefix('/account')->group(function () {
+
+    Route::post('createtxpin', [UserController::class, 'createTxPin']);
+    Route::post('verifybvn', [UserController::class, 'verifyBVN']);
+    Route::post('SendSmsOtp', [UserController::class, 'sendSmsOtp']);
 });
 
 
 
+// check the otps model
 
 
-Route::get('/',function(Request $request){
-   
+Route::get('/', function (Request $request) {
+
     return User::first();
-    
 });

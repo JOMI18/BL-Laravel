@@ -13,6 +13,7 @@ class Otps extends Model
         'user_id','code',
 
     ];
+    
     protected $casts = [
         
         'code' => 'hashed',
